@@ -25,3 +25,14 @@ vi match(const string& s, const string& pat) {
 		if (p[i] == sz(pat)) res.push_back(i - 2 * sz(pat));
 	return res;
 }
+
+vvi automaton(string s, char ch, int charSize) {
+  s += '$'; vi ff = pi(s);
+  vvi aut(sz(s), vi(charSize));
+  rep(i, 0, sz(s)) {
+    rep(c, 0, charSize) {
+      aut[i][c] = ((i > 0 && ch + c != s[i]) ? aut[ff[i - 1]][c] : (i + (ch + c == s[i])));
+    }
+  }
+  return aut;
+}
