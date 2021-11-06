@@ -108,21 +108,18 @@ Define \texttt{dp[i][x]}: the minimum cost to move the first i rectangles such t
 leftmost coordinate is x. This will lead to a solution for partial score.
 Now, see \texttt{dp[i]} as a function: it returns \texttt{dp[i][x]} for given x. It turns out that this function is a polyline
 consisting of 2i + 3 sections, and the slopes of the sections are $ -i - 1, -i, . . . , i, i + 1 $ from left to right.
-Thus, this polyline can be represented using 2i + 3 integers $l0, l1, ..., li, r0, r1, ..., ri, c$.
-\begin{itemize}
-	\item In the interval $(-\infty, li]$, the slope of the polyline is $-i - 1$.
-	\item In the interval $[li, li-1]$, the slope of the polyline is $-i$.
-	\item · · ·
-	\item In the interval $[l1, l0]$, the slope of the polyline is $-1$.
-	\item In the interval $[l0, r0]$, the polyline is constant, and the value is $c$.
-	\item In the interval $[r0, r1]$, the slope of the polyline is $1$.
-	\item · · ·
-	\item In the interval $[ri-1, ri]$, the slope of the polyline is $i$.
-	\item In the interval $[ri,\infty)$, the slope of the polyline is $i + 1$.
-\end{itemize}
-
+Thus, this polyline can be represented using 2i + 3 integers $l0, l1, ..., li, r0, r1, ..., ri, c$.\\
+$\bullet$ In the interval $(-\infty, li]$, the slope of the polyline is $-i - 1$.\\
+$\bullet$ In the interval $[li, li-1]$, the slope of the polyline is $-i$.\\
+$\bullet$ · · ·\\
+$\bullet$ In the interval $[l1, l0]$, the slope of the polyline is $-1$.\\
+$\bullet$ In the interval $[l0, r0]$, the polyline is constant, and the value is $c$.\\
+$\bullet$ In the interval $[r0, r1]$, the slope of the polyline is $1$.\\
+$\bullet$ · · ·\\
+$\bullet$ In the interval $[ri-1, ri]$, the slope of the polyline is $i$.\\
+$\bullet$ In the interval $[ri,\infty)$, the slope of the polyline is $i + 1$.\\
 Now we compute the polylines in the order $dp[0], dp[1], . . . , dp[N]$. We should keep two sets (or priority
-queues) representing ${l0,...,li}$ and ${r0,...,ri}$ meanwhile, and the solution works in $O(NlogN)$. 
+queues) representing ${l0,...,li}$ and ${r0,...,ri}$ meanwhile, and the solution works in $N \log N$. 
 
 \kactlimport{NarrowRectangle.h}
 
