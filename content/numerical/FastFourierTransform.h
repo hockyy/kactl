@@ -20,6 +20,7 @@
 #pragma once
 
 typedef complex<double> C;
+typedef complex<long double> Cd;
 typedef vector<double> vd;
 void fft(vector<C>& a) {
 	int n = sz(a), L = 31 - __builtin_clz(n);
