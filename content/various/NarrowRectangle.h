@@ -1,7 +1,7 @@
 /**
  * Author: Yoga
  * Date: 2015-03-18
- * Description: Slope Trick At Coder Narrow Rectangle Solution
+ * Description: Define \texttt{dp[i][x]}: the minimum cost to move the first i rectangles such that the last (the i-th) rectangle’s leftmost coordinate is x. This will lead to a solution for partial score.
  */
 
 priority_queue<LL> kiri;
