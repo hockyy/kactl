@@ -6,9 +6,7 @@
  * Description: Data structure that dynamically keeps track
  * of the intersection of halfplanes. Use is straigntforward.
  * Area should be able to be kept dynamically with some
- * modifications.
- *
- * NOTE: REMOVE t LOGIC FROM ANGLE WHEN IMPLEMENTING
+ * modifications. REMOVE t LOGIC FROM ANGLE WHEN IMPLEMENTING
  * Time: O(\log n)
  * Status: tested on infoarena and codechef
  * Usage:
