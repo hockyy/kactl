@@ -1,0 +1,82 @@
+[
+    { "keys": ["ctrl+shift+x"], "command": "toggle_side_bar" },
+    { "keys": ["ctrl+shift+c"], "command": "toggle_setting", "args": {"setting": "auto_match_enabled"} },
+    { "keys": ["alt+shift+up"], "command": "select_lines", "args": {"forward": false} },
+    { "keys": ["alt+shift+down"], "command": "select_lines", "args": {"forward": true} },
+    {
+        "keys": ["ctrl+."],"command": "run_multiple_commands",
+        "args": {
+            "commands": [{
+                "command": "insert_snippet", "args": {"name": "Packages/User/CP_Template/HockysCP1.sublime-snippet"}
+            },{
+                "command": "insert_date"
+            },{
+                "command": "insert_snippet", "args": {"name": "Packages/User/CP_Template/HockysCP2.sublime-snippet"}
+            }]
+        }
+    },
+    {
+        "keys": ["ctrl+,"],"command": "run_multiple_commands",
+        "args": {
+            "commands": [{
+                "command": "insert_snippet", "args": {"name": "Packages/User/CP_Template/HockysCP.sublime-snippet"}
+            }]
+        }
+    },
+    { "keys": ["ctrl+alt+t"], "command": "open_terminal" },
+    { "keys": ["ctrl+shift+t"], "command": "reopen_last_file" },
+    { "keys": ["ctrl+shift+alt+t"], "command": "open_terminal_project_folder" }
+]
+
+
+{
+    "auto_match_enabled": false,
+    "color_scheme": "Packages/Color Scheme - Default/Breakers.sublime-color-scheme",
+    "font_size": 16,
+    "font_face": "",
+    "ignored_packages":
+    [
+        "Vintage",
+    ],
+    "mini_diff": false,
+    "tab_size": 4,
+    "theme": "Default.sublime-theme",
+    "translate_tabs_to_spaces": true,
+    "word_wrap": true,
+}
+
+{
+    "shell_cmd": "g++ -std=c++17 -O2 -Ofast -s -lm -pipe -Wall -Wreturn-type -Wunused -Wshadow -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC \"${file}\" -o \"${file_path}/${file_base_name}\"",
+    "file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
+    "working_dir": "${file_path}",
+    "selector": "source.c++",
+
+    "variants":
+    [
+        {
+            "name": "Non Shadow",
+            "shell_cmd": "g++ -std=c++17 -O2 -Ofast -s -lm -pipe -Wall -Wreturn-type -Wunused -D_GLIBCXX_DEBUG -D_GLIBCXX_DEBUG_PEDANTIC \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        },
+        {
+            "name": "Shadow Check With -DLOCAL_DEBUG C++17",
+            "shell_cmd": "g++ -std=c++17 -O2 -Ofast -DLOCAL_DEBUG -s -lm -pipe -Wshadow -Wreturn-type -Wunused \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        },
+        {
+            "name": "Shadow Check C++17",
+            "shell_cmd": "g++ -std=c++17 -O2 -Ofast -s -lm -pipe -Wshadow -Wreturn-type -Wunused \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        },
+        {
+            "name": "Shadow Check C++14",
+            "shell_cmd": "g++ -std=c++14 -O2 -Ofast -s -lm -pipe -Wshadow -Wreturn-type -Wunused \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        },
+        {
+            "name": "Warning All C++11",
+            "shell_cmd": "g++ -std=c++11 -O2 -Ofast -s -lm -pipe -Wall -Wreturn-type -Wunused \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        },
+        {
+            "name": "Large Stack C++17",
+            "shell_cmd": "g++ -Wl,--stack,1073741824 -ggdb -Wall -std=c++17 -O2 -Ofast -s -lm -pipe -Wshadow -Wreturn-type -Wunused \"${file}\" -o \"${file_path}/${file_base_name}\"",
+        }
+    ]
+
+}
