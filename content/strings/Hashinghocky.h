@@ -9,7 +9,7 @@
  * Usage:
  * vi tmp = {6,9,4,2,0};
  * vector <rollingHash> solver(HASH);
- * solver[0] = rollingHash(&tmp, goodPrimes[0]);
+ * solver[0] = rollingHash(\&tmp, goodPrimes[0]);
  * Description: Self-explanatory methods for string hashing.
  * Status: tested
  */
