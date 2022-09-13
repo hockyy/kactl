@@ -18,6 +18,10 @@ jobs:
       run: sudo apt-get install texlive-latex-base texlive-latex-recommended texlive-latex-extra
     - name: Build pdf
       run: make kactl
+    - uses: actions/upload-artifact@v3
+      with:
+        name: compiled-pdf-result
+        path: build/
     # - name: Run compiles
     #  run: make test-compiles
     # - name: Run stress tests
