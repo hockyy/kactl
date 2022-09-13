@@ -20,5 +20,5 @@ jobs:
       run: make kactl
     - name: Run compiles
       run: make test-compiles
-    - name: Run stress tests
-      run: make test
+    # - name: Run stress tests
+    #   run: make test
