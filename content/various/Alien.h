@@ -1,31 +1,47 @@
 /**
- * Author: Simon Lindholm
+ * Author: Koosaga
  * License: CC0
- * Source: http://codeforces.com/blog/entry/8219
- * Description: When doing DP on intervals: $a[i][j] = \min_{i < k < j}(a[i][k] + a[k][j]) + f(i, j)$, where the (minimal) optimal $k$ increases with both $i$ and $j$,
- *  one can solve intervals in increasing order of length, and search $k = p[i][j]$ for $a[i][j]$ only between $p[i][j-1]$ and $p[i+1][j]$.
- *  This is known as Knuth DP. Sufficient criteria for this are if $f(b,c) \le f(a,d)$ and $f(a,c) + f(b,d) \le f(a,d) + f(b,c)$ for all $a \le b \le c \le d$.
- *  Consider also: LineContainer (ch. Data structures), monotone queues, ternary search.
- * Time: O(N^2)
+ * Source: https://github.com/mochow13/competitive-programming-library/blob/master/DP/IOI%20Aliens%20by%20koosaga.cpp
+ * Description: Solution for alien
+ * Time: O(N log K)
  */
- 
- int main() {
-  for (int i = 1; i < n; i++) {
-    memo[i][i + 1] = isi[i] + isi[i + 1];
-    opt[i][i + 1] = i;
-  }
-  for (int i = 2; i <= n; i++) {
-    //Compute for i+1 segment
-    for (int j = 1; j + i <= n; j++) {
-      LL cur = LINF;
-      for (int k = opt[j][j + i - 1]; k <= opt[j + 1][j + i]; k++) {
-        LL now = memo[j][k] + memo[k + 1][j + i];
-        if (cur > now) {
-          cur = now;
-          opt[j][j + i] = k;
-        }
-      }
-      memo[j][j + i] = cur + (psum[j + i] - psum[j - 1]);
+
+pi trial(lint l){
+  cht.clear();
+  for(int i=1; i<=v.size(); i++){
+    cht.add_line(2 * 2 * v[i-1].first, dp[i-1].first + 
+      2ll * v[i-1].first * v[i-1].first, dp[i-1].second);
+    dp[i] = cht.query(-v[i-1].second);
+    dp[i].first += 2ll * v[i-1].second * v[i-1].second + l; // l is penalty
+    dp[i].second++;
+    if(i != v.size()){
+      lint c = max(0ll, v[i-1].second - v[i].first);
+      dp[i].first -= 2 * c * c;
     }
   }
+  return dp[v.size()];
+}
+
+long long take_photos(int n, int m, int k, std::vector<int> r, std::vector<int> c) {
+  vector<pi> w;
+  for(int i=0; i<n; i++){
+    if(r[i] > c[i]) swap(r[i], c[i]);
+    w.push_back({r[i]-1, c[i]});
+  }
+  sort(w.begin(), w.end(), [&](const pi &a, const pi &b){
+    return pi(a.first, -a.second) < pi(b.first, -b.second);
+  });
+  for(auto &i : w){
+    if(v.empty() || v.back().second < i.second){
+      v.push_back(i);
+    }
+  }
+  lint s = 0, e = 2e12;
+  while(s != e){
+    lint m = (s+e)/2;
+    // See how many groups are made with penalty 2*m+1
+    if(trial(2 * m + 1).second <= k) e = m;
+    else s = m+1;
+  }
+  return trial(s * 2).first / 2 - s * k;
 }
