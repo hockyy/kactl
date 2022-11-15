@@ -3,7 +3,9 @@
  * Date: 2009-10-13
  * License: CC0
  * Source: N/A
- * Description: Find cycle of length K
+ * Description: Find cycle of length K = {3, 4};
+ * Time: $O(V \log V)$ in planar graph, $O(E^{3/2})$ in dense graph
+ * Usage: vi btoa(m, -1); dfsMatching(g, btoa);
  * Status: untested
  */
 #pragma once
