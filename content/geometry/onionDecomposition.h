@@ -16,24 +16,17 @@ struct Upper_Hull{
     int id;
   };
   struct Node{
-    Link *chain, *chain_back;
-    Link *tangent;
+    Link *chain, *chain_back, *tangent;
   };
   template<typename S, typename T>
   pair<Link*, Link*> find_bridge(Link*l, Link*r, S next, T convex){
     while(next(l) || next(r)){
       if(!next(r) || (next(l) && convex(Point{0, 0}, next(l)->p - l->p, next(r)->p - r->p))){
-        if(convex(l->p, next(l)->p, r->p)){
-          l = next(l);
-        } else {
-          break;
-        }
+        if(convex(l->p, next(l)->p, r->p)) l = next(l);
+        else break;
       } else {
-        if(!convex(l->p, r->p, next(r)->p)){
-          r = next(r);
-        } else {
-          break;
-        }
+        if(!convex(l->p, r->p, next(r)->p)) r = next(r);
+        else break;
       }
     }
     return {l, r};
@@ -58,18 +51,11 @@ struct Upper_Hull{
     tree[u].chain_back = tree[2*u+1].chain_back;
     tree[2*u].chain = l->next;
     tree[2*u+1].chain_back = r->prev;
-    if(l->next){
-      l->next->prev = nullptr;
-    } else {
-      tree[2*u].chain_back = nullptr;
-    }
-    if(r->prev){
-      r->prev->next = nullptr;
-    } else {
-      tree[2*u+1].chain = nullptr;
-    }
-    l->next = r;
-    r->prev = l;
+    if(l->next) l->next->prev = nullptr;
+    else tree[2*u].chain_back = nullptr;
+    if(r->prev) r->prev->next = nullptr;
+    else tree[2*u+1].chain = nullptr;
+    l->next = r; r->prev = l;
   }
   void build(int u, int a, int b){
     if(b-a == 1){
@@ -78,8 +64,7 @@ struct Upper_Hull{
       return;
     }
     const int m = a + (b-a)/2;
-    build(2*u, a, m);
-    build(2*u+1, m, b);
+    build(2*u, a, m); build(2*u+1, m, b);
     auto l = tree[2*u].chain, r = tree[2*u+1].chain;
     fix_chain(u, l, r);
   }
@@ -101,29 +86,21 @@ struct Upper_Hull{
       int v = i<m ? 2*u : 2*u+1;
       tree[v].chain = tree[u].chain;
       tree[v].chain_back = tree[u].chain_back;
-      if(i < m){
-        remove(2*u, a, m, i);
-      } else {
-        remove(2*u+1, m, b, i);
-      }
+      if(i < m) remove(2*u, a, m, i);
+      else remove(2*u+1, m, b, i);
       rob(u, v);
       return;
     }
     // restore hull of children
     auto l = tree[u].tangent, r = l->next;
     l->next = tree[2*u].chain;
-    if(tree[2*u].chain){
-      tree[2*u].chain->prev = l;
-    } else {
-      tree[2*u].chain_back = l;
-    }
+    if(tree[2*u].chain) tree[2*u].chain->prev = l;
+    else tree[2*u].chain_back = l;
     tree[2*u].chain = tree[u].chain;
     r->prev = tree[2*u+1].chain_back;
-    if(tree[2*u+1].chain_back){
+    if(tree[2*u+1].chain_back)
       tree[2*u+1].chain_back->next = r;
-    } else {
-      tree[2*u+1].chain = r;
-    }
+    else tree[2*u+1].chain = r;
     tree[2*u+1].chain_back = tree[u].chain_back;
     // delete i
     const int v = i<m ? 2*u : 2*u+1;
@@ -135,22 +112,14 @@ struct Upper_Hull{
       return;
     }
     if(i < m){
-      if(l->id == i){
-        l = l->next;
-      }
+      if(l->id == i) l = l->next;
       remove(2*u, a, m, i);
-      if(!l){
-        l = tree[2*u].chain_back;
-      }
+      if(!l) l = tree[2*u].chain_back;
       fix_chain<true>(u, l, r);
     } else {
-      if(r->id == i){
-        r = r->prev;
-      }
+      if(r->id == i) r = r->prev;
       remove(2*u+1, m, b, i);
-      if(!r){
-        r = tree[2*u+1].chain;
-      }
+      if(!r) r = tree[2*u+1].chain;
       fix_chain<false>(u, l, r);
     }
   }
@@ -172,19 +141,16 @@ struct Upper_Hull{
   }
   vector<int> get_hull(){
     vector<int> ret;
-    for(Link* u = tree[1].chain; u; u=u->next){
+    for(Link* u = tree[1].chain; u; u=u->next)
       ret.push_back(u->id);
-    }
     return ret;
   }
   vector<Point> get_hull_points(){
     vector<Point> ret;
-    for(Link* u = tree[1].chain; u; u=u->next){
+    for(Link* u = tree[1].chain; u; u=u->next)
       ret.push_back(u->p);
-    }
     return ret;
   }
-
   int n;
   vector<Node> tree;
   vector<Link> lists;
@@ -205,26 +171,17 @@ signed main(){
     ps.push_back({X,Y});
     id[{X,Y}]=i;
   }
-
   sort(ps.begin(),ps.end());
   Upper_Hull left(ps);
   reverse(ps.begin(),ps.end());
-  for(auto& p:ps){
-    p=-p;
-  }
+  for(auto& p:ps) p=-p;
   Upper_Hull right(ps);
-  for(auto& p:ps){
-    p=-p;
-  }
+  for(auto& p:ps) p=-p;
   reverse(ps.begin(),ps.end());
   for(int l=1,cnt=0;cnt<N;l++){
     set<int> hull;
-    for(int i:left.get_hull()){
-      hull.insert(i);
-    }
-    for(int i:right.get_hull()){
-      hull.insert(N-1-i);
-    }
+    for(int i:left.get_hull()) hull.insert(i);
+    for(int i:right.get_hull()) hull.insert(N-1-i);
     for(int i:hull){
       assert(!layer[i]);
       cnt++;
@@ -233,11 +190,7 @@ signed main(){
       right.remove(N-1-i);
     }
   }
-  for(int i=0;i<N;i++){
-    ans[id[ps[i]]]=layer[i];
-  }
-  for(int i=0;i<N;i++){
-    printf("%d\n",ans[i]);
-  }
+  for(int i=0;i<N;i++) ans[id[ps[i]]]=layer[i];
+  for(int i=0;i<N;i++) printf("%d\n",ans[i]);
   return 0;
 }
