@@ -10,7 +10,7 @@
  * high to low. We can also toggle the high of the cell and a cost D 
  * will be added. What is the minimum of total cost?
  * final position of f2N trucks should be at bottom and right. 
- * Solution: Connect every cell to its 
+ * Solution is Connect every cell to its 
  * neighbor with capacity C. Connect every low cell to source with 
  * capacity D. Connect every high cell to sink with capacity D.
  * Status: tested
