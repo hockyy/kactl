@@ -69,11 +69,8 @@
 % Given DAG with value on each node (value can be negative). We can choose a node X to be removed from graph and then 
 % we get the value of that node to the score. Before removing node X, X SHOULD HAVE ZERO in-degree. After removing node X, all edges that outcoming from X become removed. We can do that until the graph has no node, or we can stop at any time.
 % What is the maximum score? Solution: Sum of positive value on each node plus minimum cut. For every edge (a,b), Connect b to a with capacity INF. Connect every source to positive node with capacity abs(value). Connect every negative node to sink with capacity abs(value).
-\subsection{Landscaping}
-Given N x N grid, each cell is either low or high land. There are N trucks going straight from top to bottom and N truck going straight from left to right.
-Also a cost C is added if a truck hit a land from low to high or high to low. 
-We can also toggle the high of the cell and a cost D will be added. 
-What is the minimum of total cost? final position of f2N trucks should be at bottom and right. Solution: Connect every cell to its neighbor with capacity C. Connect every low cell to source with capacity D. Connect every high cell to sink with capacity D.
+\kactlimport{Landscaping.h}
+
 
 % \subsection{Slope Trick Explanation}
 % Define $f_{i}(x)$ as the minimum number of moves to change the first $i$ elements into a non-decreasing sequence such that $ai \leq x$.
