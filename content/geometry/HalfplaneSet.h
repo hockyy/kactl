@@ -1,84 +1,131 @@
 /**
- * Author: Lucian Bicsi
- * Date: 2018-05-01
- * License: CC0
- * Source: Basic geometry
+ * Author: retrograd
  * Description: Data structure that dynamically keeps track
- * of the intersection of halfplanes. Use is straigntforward.
- * Area should be able to be kept dynamically with some
- * modifications. REMOVE t LOGIC FROM ANGLE WHEN IMPLEMENTING
- * Time: O(\log n)
- * Status: tested on infoarena and codechef
- * Usage:
- *  HalfplaneSet hs;
- *  hs.Cut({0, 0}, {1, 1});
- *  double best = hs.Maximize({1, 2});
+ * of the intersection of halfplanes.
+ * Status: tested on codechef ALLPOLY
  */
-#pragma once
+#include <bits/stdc++.h>
 
-#include "Point.h"
-#include "LineIntersection.h"
-#include "Angle.h"
+using namespace std;
 
-struct HalfplaneSet : multimap<Angle, Point> {
-  using Iter = multimap<Angle, Point>::iterator;
-  
+using T = int; 
+using T2 = long long;
+using T4 = __int128_t;
+const T2 INF = 2e9;
+
+struct Line { T a, b; T2 c; };
+
+bool operator<(Line m, Line n) {
+  auto half = [&](Line m) { 
+    return m.b < 0 || m.b == 0 && m.a < 0; };
+  return make_tuple(half(m), (T2)m.b * n.a) < 
+    make_tuple(half(n), (T2)m.a * n.b);
+}
+tuple<T4, T4, T2> LineIntersection(Line m, Line n) {
+  T2 d = (T2)m.a * n.b - (T2)m.b * n.a; // assert(d);
+  T4 x = (T4)m.c * n.b - (T4)m.b * n.c; 
+  T4 y = (T4)m.a * n.c - (T4)m.c * n.a;
+  return {x, y, d};
+}
+Line LineFromPoints(T x1, T y1, T x2, T y2) {
+  T a = y1 - y2, b = x2 - x1;
+  T2 c = (T2)a * x1 + (T2)b * y1;
+  return {a, b, c};
+}
+ostream& operator<<(ostream& out, Line l) {
+  out << "(" << l.a << " * x + " << l.b << " * y <= " << l.c << ")";
+  return out;
+}
+
+struct HalfplaneSet : multiset<Line> {
   HalfplaneSet() {
-    insert({{+1, 0}, {-kInf, -kInf}});
-    insert({{0, +1}, {+kInf, -kInf}});
-    insert({{-1, 0}, {+kInf, +kInf}});
-    insert({{0, -1}, {-kInf, +kInf}});
+    insert({+1, 0, INF}); insert({0, +1, INF});
+    insert({-1, 0, INF}); insert({0, -1, INF});
+  };
+ 
+  auto prv(auto it) { return --(it == begin() ? end() : it); }
+  auto nxt(auto it) { return (++it == end() ? begin() : it); }
+  bool bad(auto it) {
+    auto l = *it, pl = *prv(it), nl = *nxt(it);
+    T4 x, y; T2 d; tie(x, y, d) = LineIntersection(pl, nl);
+    // auto [x, y, d] = LineIntersection(pl, nl);
+    T4 sat = l.a * x + l.b * y - (T4)l.c * d;
+    if (d < 0 && sat < 0) {
+      // cerr << "unsat: " << l << endl;
+      clear(); // infeasible
+    }
+    /*
+    if (d > 0 && sat <= 0) {
+      cerr << "bad: " << l << endl;
+      cerr << "  pl: " << pl << endl;
+      cerr << "  nl: " << nl << endl;
+      cerr << "  det: " << d << endl;
+    }*/
+    return d > 0 && sat <= 0 || d == 0 && sat < 0;
   }
-  
-  Iter get_next(Iter it) {
-    return (next(it) == end() ? begin() : next(it)); }
-  Iter get_prev(Iter it) {
-    return (it == begin() ? prev(end()) : prev(it)); }
-  Iter fix(Iter it) { return it == end() ? begin() : it; }
-  
-  // Cuts everything to the RIGHT of a, b
-  // For LEFT, just swap a with b
-  void Cut(Angle a, Angle b) {
+  void Cut(Line l) { // add ax + by <= c
     if (empty()) return;
-    int old_size = size();
-    
-    auto eval = [&](Iter it) {
-      return sgn(det(a.p(), b.p(), it->second)); };
-    auto intersect = [&](Iter it)  {
-      return LineIntersection(a.p(), b.p(),
-          it->second, it->first.p() + it->second);
-    };
-    
-    auto it = fix(lower_bound(b - a));
-    if (eval(it) >= 0) return;
-    
-    while (size() && eval(get_prev(it)) < 0)
-      fix(erase(get_prev(it)));
-    while (size() && eval(get_next(it)) < 0)
-      it = fix(erase(it));
-    
-    if (empty()) return;
-    
-    if (eval(get_next(it)) > 0) it->second = intersect(it);
-    else it = fix(erase(it));
-    if (old_size <= 2) return;
-    it = get_prev(it);
-    insert(it, {b - a, intersect(it)});
-    if (eval(it) == 0) erase(it);
+    auto it = insert(l);
+    if (bad(it)) { erase(it); return; }
+    while (size()) {
+      auto nit = nxt(it);
+      if (bad(nit)) 
+        erase(nit);
+      else break;
+    }
+    while (size()) {
+      auto pit = prv(it);
+      if (bad(pit)) erase(pit);
+      else break;
+    }
   }
-  
-  // Maximizes dot product
-  double Maximize(Angle c) {
-    assert(!empty());
-    auto it = fix(lower_bound(c.t90()));
-    return dot(it->second, c.p());
+  double Maximize(T a, T b) { // max ax + by
+    if (empty()) return -1/0.;
+    auto it = lower_bound({-b, a});
+    if (it == end()) it = begin();
+    // auto [x, y, d] = LineIntersection(*prv(it), *it);
+    // return (1.0 * a * x + 1.0 * b * y) / d;
   }
-  
   double Area() {
-    if (size() <= 2) return 0;
-    double ret = 0;
-    for (auto it = begin(); it != end(); ++it)
-      ret += cross(it->second, get_next(it)->second);
-    return ret;
+    long double total = 0.;
+    for (auto it = begin(); it != end(); ++it) {
+      T4 x1, y1; T2 d1; tie(x1, y1, d1) = LineIntersection(*prv(it), *it);
+      T4 x2, y2; T2 d2; tie(x2, y2, d2) = LineIntersection(*it, *nxt(it));
+    //   auto [x1, y1, d1] = LineIntersection(*prv(it), *it);
+    //   auto [x2, y2, d2] = LineIntersection(*it, *nxt(it));
+      total += (1.0L * x1/d1 * y2/d2 - 1.0L * x2/d2 * y1/d1);
+    }
+    return total * 0.5L;
+  }
+  
+  void Dump() {
+    for (auto it = begin(); it != end(); ++it) 
+      cout << *it << endl;
+    cout << endl;
   }
 };
+
+int main() {
+  //ifstream cin("camera.in");
+  //ofstream cout("camera.out");
+
+  int t; cin >> t;
+  while (t--) {
+    int n; cin >> n;
+
+    vector<T> x(n), y(n);
+    for (int i = 0; i < n; ++i) 
+      cin >> x[i] >> y[i];
+
+    HalfplaneSet HS;
+    for (int j = n - 1, i = 0; i < n; j = i++) 
+      HS.Cut(LineFromPoints(x[j], y[j], x[i], y[i]));
+    /*
+       if (HS.size()) {
+       cerr << "FINAL\n";
+       for (auto x : HS) cerr << x << "\n";
+       }*/
+    cout << fixed << setprecision(6) << HS.Area() / 4e14 << '\n';
+  }
+  return 0;
+}
