@@ -20,7 +20,7 @@ jobs:
       run: make kactl
     - uses: actions/upload-artifact@v3
       with:
-        name: stack.py.pdf
+        name: kactl
         path: build/kactl.pdf
         retention-days: 1
     # - name: Run compiles
