@@ -7,48 +7,6 @@
 using namespace std;
 using ll = int64_t;
 
-struct Point{
-  Point& operator+=(Point const&o) {
-    x+=o.x;
-    y+=o.y;
-    return *this;
-  }
-  Point& operator-=(Point const&o) {
-    x-=o.x;
-    y-=o.y;
-    return *this;
-  }
-  Point operator-() const {
-    return Point{-x, -y};
-  }
-  friend Point operator+(Point a, Point const&b){
-    a+=b;
-    return a;
-  }
-  friend Point operator-(Point a, Point const&b){
-    a-=b;
-    return a;
-  }
-  friend ll dot(Point const&a, Point const&b){
-    return a.x*b.y + a.y*b.y;
-  }
-  friend ll cross(Point const&a, Point const&b){
-    return a.x*b.y - a.y*b.x;
-  }
-  friend bool operator<(Point const&a, Point const&b){
-    return tie(a.x, a.y) < tie(b.x, b.y);
-  }
-
-  ll x=0, y=0;
-};
-
-int ccw(Point const&a, Point const&b){
-  ll x = cross(a, b);
-  return (x>0)-(x<0);
-}
-int ccw(Point const&a, Point const&b, Point const&c){
-  return ccw(b-a, c-a);
-}
 // Decremental convex hull in O(n log n)
 // From "Applications of a semi-dynamic convex hull algorithm" by J. Hershberger and S. Suri
 struct Upper_Hull{
