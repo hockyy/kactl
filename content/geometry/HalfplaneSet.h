@@ -5,16 +5,12 @@
  * Status: tested on codechef ALLPOLY
  */
 #include <bits/stdc++.h>
-
 using namespace std;
-
 using T = int; 
 using T2 = long long;
 using T4 = __int128_t;
 const T2 INF = 2e9;
-
 struct Line { T a, b; T2 c; };
-
 bool operator<(Line m, Line n) {
   auto half = [&](Line m) { 
     return m.b < 0 || m.b == 0 && m.a < 0; };
@@ -36,7 +32,6 @@ ostream& operator<<(ostream& out, Line l) {
   out << "(" << l.a << " * x + " << l.b << " * y <= " << l.c << ")";
   return out;
 }
-
 struct HalfplaneSet : multiset<Line> {
   HalfplaneSet() {
     insert({+1, 0, INF}); insert({0, +1, INF});
@@ -51,16 +46,8 @@ struct HalfplaneSet : multiset<Line> {
     // auto [x, y, d] = LineIntersection(pl, nl);
     T4 sat = l.a * x + l.b * y - (T4)l.c * d;
     if (d < 0 && sat < 0) {
-      // cerr << "unsat: " << l << endl;
       clear(); // infeasible
     }
-    /*
-    if (d > 0 && sat <= 0) {
-      cerr << "bad: " << l << endl;
-      cerr << "  pl: " << pl << endl;
-      cerr << "  nl: " << nl << endl;
-      cerr << "  det: " << d << endl;
-    }*/
     return d > 0 && sat <= 0 || d == 0 && sat < 0;
   }
   void Cut(Line l) { // add ax + by <= c
@@ -69,8 +56,7 @@ struct HalfplaneSet : multiset<Line> {
     if (bad(it)) { erase(it); return; }
     while (size()) {
       auto nit = nxt(it);
-      if (bad(nit)) 
-        erase(nit);
+      if (bad(nit)) erase(nit);
       else break;
     }
     while (size()) {
@@ -97,34 +83,19 @@ struct HalfplaneSet : multiset<Line> {
     }
     return total * 0.5L;
   }
-  
-  void Dump() {
-    for (auto it = begin(); it != end(); ++it) 
-      cout << *it << endl;
-    cout << endl;
-  }
 };
-
 int main() {
   //ifstream cin("camera.in");
   //ofstream cout("camera.out");
-
   int t; cin >> t;
   while (t--) {
     int n; cin >> n;
-
     vector<T> x(n), y(n);
     for (int i = 0; i < n; ++i) 
       cin >> x[i] >> y[i];
-
     HalfplaneSet HS;
     for (int j = n - 1, i = 0; i < n; j = i++) 
       HS.Cut(LineFromPoints(x[j], y[j], x[i], y[i]));
-    /*
-       if (HS.size()) {
-       cerr << "FINAL\n";
-       for (auto x : HS) cerr << x << "\n";
-       }*/
     cout << fixed << setprecision(6) << HS.Area() / 4e14 << '\n';
   }
   return 0;
