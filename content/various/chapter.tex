@@ -17,13 +17,13 @@
 	\kactlimport{KnuthDP.h}
 	\kactlimport{DivideAndConquerDP.h}
 
-\section{Debugging tricks}
-	\begin{itemize}
-		\item \verb@signal(SIGSEGV, [](int) { _Exit(0); });@ converts segfaults into Wrong Answers.
-			Similarly one can catch SIGABRT (assertion failures) and SIGFPE (zero divisions).
-			\verb@_GLIBCXX_DEBUG@ failures generate SIGABRT (or SIGSEGV on gcc 5.4.0 apparently).
-		\item \verb@feenableexcept(29);@ kills the program on NaNs (\texttt 1), 0-divs (\texttt 4), infinities (\texttt 8) and denormals (\texttt{16}).
-	\end{itemize}
+% \section{Debugging tricks}
+% 	\begin{itemize}
+% 		\item \verb@signal(SIGSEGV, [](int) { _Exit(0); });@ converts segfaults into Wrong Answers.
+% 			Similarly one can catch SIGABRT (assertion failures) and SIGFPE (zero divisions).
+% 			\verb@_GLIBCXX_DEBUG@ failures generate SIGABRT (or SIGSEGV on gcc 5.4.0 apparently).
+% 		\item \verb@feenableexcept(29);@ kills the program on NaNs (\texttt 1), 0-divs (\texttt 4), infinities (\texttt 8) and denormals (\texttt{16}).
+% 	\end{itemize}
 
 \section{Optimization tricks}
 	\verb@__builtin_ia32_ldmxcsr(40896);@ disables denormals (which make floats 20x slower near their minimum value).
@@ -53,7 +53,6 @@
 \section{Known Problems}
 \kactlimport{StableMarriage.h}
 \kactlimport{FlowShopScheduling.h}
-% \kactlimport{2sat.h}
 \kactlimport{KonigTheorem.h}
 \kactlimport{MoserCircle.h}
 \kactlimport{ChickenMcNugget.h}
@@ -69,7 +68,10 @@
 % Given DAG with value on each node (value can be negative). We can choose a node X to be removed from graph and then 
 % we get the value of that node to the score. Before removing node X, X SHOULD HAVE ZERO in-degree. After removing node X, all edges that outcoming from X become removed. We can do that until the graph has no node, or we can stop at any time.
 % What is the maximum score? Solution: Sum of positive value on each node plus minimum cut. For every edge (a,b), Connect b to a with capacity INF. Connect every source to positive node with capacity abs(value). Connect every negative node to sink with capacity abs(value).
-\kactlimport{Landscaping.h}
+% \kactlimport{Landscaping.h}
+\kactlimport{../graph/2sat.h}
+\kactlimport{../data-structures/Sparse2D.h}
+
 
 
 % \subsection{Slope Trick Explanation}
