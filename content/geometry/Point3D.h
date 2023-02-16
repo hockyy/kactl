@@ -42,3 +42,14 @@ template<class T> struct Point3D {
 		return u*dot(u)*(1-c) + (*this)*c - cross(u)*s;
 	}
 };
+
+pair<bool, PD> intersectPoint(PD rayPoint, PD rayVector, Plane plane) {
+	// plane.fi is point passing plane
+	// plane.se is normal vector from O
+  PD diff = rayPoint - plane.fi;
+  LD prod1 = diff.dot(plane.se);
+  LD prod2 = rayVector.dot(plane.se);
+  if (prod2 == 0) return {0, PD()};
+  LD prod3 = prod1 / prod2;
+  return {1, rayPoint - rayVector * prod3};
+}
