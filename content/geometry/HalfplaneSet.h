@@ -77,8 +77,6 @@ struct HalfplaneSet : multiset<Line> {
     for (auto it = begin(); it != end(); ++it) {
       T4 x1, y1; T2 d1; tie(x1, y1, d1) = LineIntersection(*prv(it), *it);
       T4 x2, y2; T2 d2; tie(x2, y2, d2) = LineIntersection(*it, *nxt(it));
-    //   auto [x1, y1, d1] = LineIntersection(*prv(it), *it);
-    //   auto [x2, y2, d2] = LineIntersection(*it, *nxt(it));
       total += (1.0L * x1/d1 * y2/d2 - 1.0L * x2/d2 * y1/d1);
     }
     return total * 0.5L;
