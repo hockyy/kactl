@@ -1,8 +1,8 @@
 /**
  * Author: grhkm
  * Date: 2020-09-23
- * Description: Find the value of $\sum_{i = 1}^n i^k$ modulo $10^9 + 7$.
- * Time: O(n)
+ * Description: Find the value of $\sum_{i = 1}^x i^k$ modulo $10^9 + 7$.
+ * Time: O(k)
  */
 #pragma once
 
@@ -13,7 +13,7 @@ int interpolate(int x, int k, bool bf = false) {
   if (x <= k + 1 || bf) {
     int s = 0;
     for (int i = 1; i <= x; i ++) {
-      s = (s + qpow(i, k)) % mod;
+      s = (s + modpow(i, k)) % mod;
     }
     return s;
   }
@@ -28,7 +28,7 @@ int interpolate(int x, int k, bool bf = false) {
   int yi = 0; // 0^k +~ i^k
   int num, denom;
   for (int i = 0; i <= k + 1; i ++) {
-    yi = (yi + qpow(i, k)) % mod; // interpolate point: (i, yi)
+    yi = (yi + modpow(i, k)) % mod; // interpolate point: (i, yi)
     if (i == 0) num = suf[1];
     else if (i == k + 1) num = pre[k];
     else num = pre[i - 1] * suf[i + 1] % mod; // numerator
