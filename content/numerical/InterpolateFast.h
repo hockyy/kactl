@@ -1,8 +1,8 @@
 /**
  * Author: grhkm
  * Date: 2020-09-23
- * Description: Find the value of $\sum_{i = 1}^n i^k$ modulo $10^9 + 7$.
- * Time: O(n)
+ * Description: Find the value of $\sum_{i = 1}^x i^k$ modulo $10^9 + 7$.
+ * Time: O(x)
  */
 #pragma once
 
