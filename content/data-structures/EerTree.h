@@ -1,65 +1,48 @@
 /**
- * Author: Hocky Yudhiono
+ * Author: SuprDewd, hocky
  * Date: 2021-10-21
  * License: CC0
- * Source: own work
- * Description: Eertree for palindrome operations, can be improved using direct link dp
+ * Source: https://github.com/SuprDewd/CompetitiveProgramming/blob/master/code/strings/eertree.cpp
+ * Description: st[i] represents a palindromic substring of s,
+ * st[last] is the longest palindromic suffix of s[0,n)
+ * st[i].link is the longest palindromic suffix of st[last], `abbab`.link -> `bab`
  * Time: O(N)
  * Status: Tested on several problems
  */
 #pragma once
 
-struct EerTree {
-  struct Node {
-    int next[26], suffixLink, length, occ;
-    Node() {
-      memset(next, 0, sizeof(next));
-      suffixLink = length = occ = 0;
-    }
-  };
+const char BASE = 'a';
+struct state {
+  int len, link, to[26], occ;
+};
+struct Eertree {
+  int last, idx, n;
+  vector <state> st;
   string s;
-  int n, lastPointer, lastIndex;
-  vector <Node> tree;
-  EerTree(int _n) {
-    s = ""; tree.resize(3); init();
+  Eertree(string S) : last(1), idx(2), n(0), st(S.size() + 3), s(S) {
+    st[0].len = st[0].link = -1;
   }
-  void append(char ch) {
-    s += ch; assert(sz(tree) > sz(s));
-    addChar(s.back());
+  int extend() {
+    int c = s[n++] - BASE; int p = last;
+    while (n - st[p].len - 2 < 0 || c != s[n - st[p].len - 2] - BASE)
+      p = st[p].link;
+    if (!st[p].to[c]) {
+      int q = last = idx++;
+      st[p].to[c] = q; st[q].len = st[p].len + 2;
+      do {  p = st[p].link; }
+      while (p != -1 && (n < st[p].len + 2 || c != s[n - st[p].len - 2] - BASE));
+      if (p == -1) st[q].link = 1;
+      else st[q].link = st[p].to[c];
+    } else last = st[p].to[c];
+    st[last].occ++;
+    return 0;
   }
-  void init() {
-    tree[0].suffixLink = 0; tree[0].length = -1;
-    tree[1].suffixLink = tree[1].length = 0; lastPointer = n = 0;
-    lastIndex = 1;
-  }
-  void addChar(char ch) {
-    int let = ch - 'a';
-    while (n - tree[lastPointer].length - 1 < 0 || s[n - tree[lastPointer].length - 1] != ch)
-      lastPointer = tree[lastPointer].suffixLink;
-    if (!tree[lastPointer].next[let]) {
-      tree[lastPointer].next[let] = ++lastIndex;
-      if (lastIndex >= sz(tree)) tree.push_back(Node());
-      tree[lastIndex].length = tree[lastPointer].length + 2;
-      if (tree[lastIndex].length == 1) tree[lastIndex].suffixLink = 1;
-      else {
-        int ancestor = tree[lastPointer].suffixLink;
-        while (s[n - tree[ancestor].length - 1] != ch) ancestor = tree[ancestor].suffixLink;
-        tree[lastIndex].suffixLink = tree[ancestor].next[let];
-      }
+  LL cntPal() {
+    LL tot = 0;
+    for (int i = idx; i >= 2; i--) {
+      st[st[i].link].occ += st[i].occ;
+      tot += st[i].occ;
     }
-    lastPointer = tree[lastPointer].next[let];
-    tree[lastPointer].occ++;
-    n++;
-  }
-  void printAns() {
-    long long ans = 0;
-    for (int i = lastIndex; i >= 2; i--) {
-      long long curval = 1LL * tree[i].occ * tree[i].length;
-      if (curval > ans) {
-        ans = curval;
-      }
-      tree[tree[i].suffixLink].occ += tree[i].occ;
-    }
-    cout << ans << endl;
+    return tot;
   }
 };
