@@ -91,8 +91,11 @@ Integration by parts:
 	1^3 + 2^3 + 3^3 + \dots + n^3 &= \frac{n^2(n+1)^2}{4} \\
 	1^4 + 2^4 + 3^4 + \dots + n^4 &= \frac{n(n+1)(2n+1)(3n^2 + 3n - 1)}{30} \\
 \end{align*}
+Suppose for every integer non-negative n $\sum_{i = 1}^{n} f(i) = g(n)$, where f and g are polynoms. Then for some constant $c$, true that $\sum_{i = 1}^{n} f'(i) = g'(n) + c$.
 
+Given a sequence $d_{1, 1}, d_{1, 2}, d_{1, 3}, \dots$ with $d_{i, j} = d_{i - 1, j + 1} - d_{i - 1, j}$. Find until the terms $m$, where $d_{m, 1} = d_{m, 2} = \dots$
 \[\begin{array}{ll}
+d_{1, n} = \frac{d_{1, 1}}{0!} + (n - 1)\frac{d_{2, 1}}{1!} + (n - 1)(n - 2)\frac{d_{3, 1}}{2!} + \dots\\\\
 \sum_{k=0}^{n} k\binom{n}{k} = n2^{n-1} & \sum_{k=0}^{n} k^2\binom{n}{k} = (n+n^2)2^{n-2} \\                      
 sum_{j=0}^{k} \binom{m}{j}\binom{n-m}{k-j} = \binom{n}{k} & \sum_{m=0}^{n} \binom{m}{j}\binom{n-m}{k-j} = \binom{n+1}{k+1} \\
 \sum_{m=0}^{n} \binom{m}{k} = \binom{n+1}{k+1} & \sum_{k=0}^{\left \lfloor \frac{n}{2} \right \rfloor} \binom{n-k}{k} = F(n+1) \\
