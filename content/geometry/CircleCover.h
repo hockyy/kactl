@@ -4,6 +4,7 @@
  * License: CC0
  * Source: https://github.com/spaghetti-source/algorithm/blob/master/geometry/_geom.cc
  * Description: Get the maximum amount of point coverable by a circle with radius r
+ * Time: O(n \log^2 n)
  * Status: Verified https://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1132
  */
 #include "Point.h"
