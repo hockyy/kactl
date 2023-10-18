@@ -1,10 +1,10 @@
 /**
- * Author: Yusuf Sholeh
- * Date: 2009-04-14
+ * Author: hocky
+ * Date: 2023-10-18
  * License: CC0
  * Source:
  * Description: Find whether exists triangle whose area is exactly S.
- * Status: tested, except for phi and theta
+ * Status: tested
  */
 struct Segment {
   PL v; int a, b;
