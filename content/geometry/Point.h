@@ -8,7 +8,9 @@
  * Status: Works fine, used a lot
  */
 #pragma once
-
+template<class T> inline bool eq(T x, T y) { return fabs(x-y) < EPS; }
+template<class T> inline bool le(T x, T y) { return x < y + EPS; }
+template<class T> inline bool lt(T x, T y) { return x + EPS < y; }
 template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
 template<class T>
 struct Point {
