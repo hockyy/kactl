@@ -27,13 +27,11 @@ pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
 	sort(all(inter), [&](const Intersect&aa, const Intersect&bb){
 		return lt(vec.dot(aa.fi - a), vec.dot(bb.fi - a));
 	});
-	LD furthest = 0; int pre, inside = -1; // set inside=1 if strictly inside
+	int furthest = 0; int pre, inside = -1; // set inside=1 if strictly inside
 	rep(i,0,sz(inter)){
 		// If a is strictly inside polygon, you can uncomment this
 		//~ if(vec.dot(inter[i].fi - a) < 0) continue;
-		if(inside >= 0) {
-      			furthest += (inter[i].fi - inter[i - 1].fi).dist();
-      			/* inter[i].fi, isi[i - 1].fi is an active segment */}
+		if(inside >= 0) { furthest = i - 1;/* inter[i].fi, isi[i - 1].fi is an active segment */}
 		if(inter[i].se.fi * inter[i].se.se == -1) inside = -inside;
 		else if(inside == 0) inside = (inter[i].se.fi+inter[i].se.se) * pre;
 		else {
@@ -44,7 +42,7 @@ pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
 		//~ if(inside == -1) {}
 		// add this to stop at b;
 		if(inter[i].fi == b) return {furthest, b};
-		if(inside == -1) furthest = 0;
+		if(inside == -1) furthest = i + 1;
 	}
 	return {0, b};
 }
