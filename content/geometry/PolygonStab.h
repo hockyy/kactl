@@ -22,7 +22,7 @@ pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
 	}
 	auto vec = b - a;
 	
-	// Add this to stop at b
+	// Uncomment this to stop at b
 	// inter.pb({b, {0,0}});
 	sort(all(inter), [&](const Intersect&aa, const Intersect&bb){
 		return lt(vec.dot(aa.fi - a), vec.dot(bb.fi - a));
@@ -40,8 +40,8 @@ pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
 		}
 		// do operations here, inside == 0 means parallel to segment
 		//~ if(inside == -1) {}
-		// add this to stop at b;
-		if(inter[i].fi == b) return {furthest, b};
+		// Uncomment this to stop at b;
+		// if(inter[i].fi == b) return {(inter[i].fi - inter[furthest].fi).dist2(), b};
 		if(inside == -1) furthest = i + 1;
 	}
 	return {0, b};
