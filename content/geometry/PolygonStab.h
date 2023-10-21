@@ -32,8 +32,8 @@ pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
 		// If a is strictly inside polygon, you can uncomment this
 		//~ if(vec.dot(inter[i].fi - a) < 0) continue;
 		if(inside >= 0) {
-      furthest += (inter[i].fi - inter[i - 1].fi).dist();
-      /* inter[i].fi, isi[i - 1].fi is an active segment */}
+      			furthest += (inter[i].fi - inter[i - 1].fi).dist();
+      			/* inter[i].fi, isi[i - 1].fi is an active segment */}
 		if(inter[i].se.fi * inter[i].se.se == -1) inside = -inside;
 		else if(inside == 0) inside = (inter[i].se.fi+inter[i].se.se) * pre;
 		else {
