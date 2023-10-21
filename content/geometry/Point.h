@@ -8,9 +8,10 @@
  * Status: Works fine, used a lot
  */
 #pragma once
-template<class T> inline bool eq(T x, T y) { return fabs(x-y) < EPS; }
-template<class T> inline bool le(T x, T y) { return x < y + EPS; }
-template<class T> inline bool lt(T x, T y) { return x + EPS < y; }
+// sweet spots for eps is 1e-13 to 1e-15 for ld, and 1e-7 to 1e-9 for d
+template<class T> inline bool eq(T x, T y) { return fabs(x-y) < eps; }
+template<class T> inline bool le(T x, T y) { return x < y + eps; }
+template<class T> inline bool lt(T x, T y) { return x + eps < y; }
 template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
 template<class T>
 struct Point {
