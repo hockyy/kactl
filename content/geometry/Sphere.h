@@ -11,10 +11,12 @@
 #include "Point3D.h"
 constexpr p3 zero(0, 0, 0);
 
+// Transform from r lat lon to x y z
 p3 sph(double r, double lat, double lon) {
   lat *= M_PI / 180, lon *= M_PI / 180;
   return {r * cos(lat)*cos(lon), r * cos(lat)*sin(lon), r * sin(lat)};
 }
+// count intersection of sphere and a line
 int sphereLine(p3 o, double r, Line3d l, pair<p3, p3> &out) {
   double h2 = r * r - l.dist2(o);
   if (h2 < 0) return 0;
@@ -23,27 +25,28 @@ int sphereLine(p3 o, double r, Line3d l, pair<p3, p3> &out) {
   out = {p - h, p + h};
   return 1 + (h2 > 0);
 }
+// Spherical distance
 double greatCircleDist(p3 o, double r, p3 a, p3 b) {
   return r * (a - o).angle(b - o);
 }
 bool validSegment(p3 a, p3 b) {
   return !(a * b == zero) || (a | b) > 0;
 }
-
+// Proper segment intersection in a sphere
 bool properInter(p3 a, p3 b, p3 c, p3 d, p3 &out) {
   p3 ab = a * b, cd = c * d; // normals of planes OAB and OCD
   int oa = sgn(cd | a), ob = sgn(cd | b), oc = sgn(ab | c), od = sgn(ab | d);
   out = ab * cd * od;
   return (oa != ob && oc != od && oa != oc);
 }
-
+// Check if point p is in the segment a b in a sphere
 bool onSphSegment(p3 a, p3 b, p3 p) {
   p3 n = a * b;
   if (n == zero)
     return a * p == zero && (a | p) > 0;
   return (n | p) == 0 && (n | a * p) >= 0 && (n | b * p) <= 0;
 }
-
+// Improper intersection
 struct directionSet : vector<p3> {
   using vector::vector; // import constructors
   void insert(p3 p) {
@@ -71,6 +74,7 @@ double orientedAngleSph(p3 a, p3 b, p3 c) {
   else
     return 2 * M_PI - angleSph(a, b, c);
 }
+// Volume on sphere use green formula
 double areaOnSphere(double r, vector<p3> p) {
   int n = p.size();
   double sum = -(n - 2) * M_PI;
@@ -78,7 +82,8 @@ double areaOnSphere(double r, vector<p3> p) {
     sum += orientedAngleSph(p[(i + 1) % n], p[(i + 2) % n], p[i]);
   return r * r * sum;
 }
-
+// Check if O inside the polyhedron fs
+// Shift all points relative to P
 int windingNumber3D(vector<vector<p3>> fs) {
   double sum = 0;
   for (vector<p3> f : fs)

@@ -10,24 +10,20 @@
 #pragma once
 #include "Point3D.h"
 struct edge {
-  int v; bool same; // = is the common edge in the same order?
+  int v; bool same;
 };
-// Given a series of faces (lists of points), reverse some of them
-// so that their orientations are consistent
 void reorient(vector<vector<p3>> &fs) {
   int n = fs.size();
-// Find the common edges and create the resulting graph
   vector<vector<edge>> g(n);
   map<pair<p3, p3>, int> es;
   for (int u = 0; u < n; u++) {
     for (int i = 0, m = fs[u].size(); i < m; i++) {
       p3 a = fs[u][i], b = fs[u][(i + 1) % m];
-// Let’s look at edge [AB]
-      if (es.count({a, b})) { // seen in same order
+      if (es.count({a, b})) {
         int v = es[ {a, b}];
         g[u].push_back({v, true});
         g[v].push_back({u, true});
-      } else if (es.count({b, a})) { // seen in different order
+      } else if (es.count({b, a})) {
         int v = es[ {b, a}];
         g[u].push_back({v, false});
         g[v].push_back({u, false});
