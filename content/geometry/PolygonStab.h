@@ -10,29 +10,39 @@
 
 #include "Point.h"
 
-P isi[1005];
-template<class P>
-P PolygonStab(P a, P b) {
-  vector<intersectPoint> all;
-  for (int k = 1; k <= n; k++) {
-    auto res = lineInter(a, b, isi[k], isi[k + 1 <= n ? k + 1 : 1]);
-    if (res.fi == 1 && onSegment(isi[k], isi[k + 1 <= n ? k + 1 : 1], res.se)) {
-      all.pb({res.se, {a.ccw(b, isi[k]), a.ccw(b, isi[k + 1 <= n ? k + 1 : 1])}});
-    }
-  }
-  sort(all.begin(), all.end());
-  int isInside = -1, pre;
-  LD curAns = 0; P lst;
-  for (int k = 0; k < all.size(); k++) {
-    if (isInside >= 0) curAns += (all[k].fi - all[k - 1].fi).dist();
-    if (all[k].se.fi * all[k].se.se == -1) isInside = -isInside;
-    else if (isInside == 0) isInside = (all[k].se.fi + all[k].se.se) * pre;
-    else {
-      pre = (all[k].se.fi + all[k].se.se) * isInside;
-      isInside = 0;
-    }
-    ans = doubleMax(ans, curAns);
-    if (isInside == -1) curAns = 0, lst = all[k + 1 <= (int)(all.size()) - 1 ? k + 1 : 0].fi;
-  }
-  return curAns;
+typedef pair<P, PII> Intersect;
+pair<LD, P> rayCast(P a, P b, const vector <P> &isi){
+	vector <Intersect> inter; int n = sz(isi);
+	rep(i,0,n){
+		auto &nx = isi[i+1 == n ? 0 : i + 1];
+		auto res = lineInter(a, b, isi[i], nx);
+		if(res.fi == 1 && eq(segDist2(isi[i], nx, res.se), (LD)0.0)) {
+			inter.pb({res.se, {a.ccw(b, isi[i]), a.ccw(b, nx)}});
+		}
+	}
+	auto vec = b - a;
+	
+	// Uncomment this to stop at b
+	// inter.pb({b, {0,0}});
+	sort(all(inter), [&](const Intersect&aa, const Intersect&bb){
+		return lt(vec.dot(aa.fi - a), vec.dot(bb.fi - a));
+	});
+	int furthest = 0; int pre, inside = -1; // set inside=1 if strictly inside
+	rep(i,0,sz(inter)){
+		// If a is strictly inside polygon, you can uncomment this
+		//~ if(vec.dot(inter[i].fi - a) < 0) continue;
+		if(inside >= 0) { furthest = i - 1;/* inter[i].fi, isi[i - 1].fi is an active segment */}
+		if(inter[i].se.fi * inter[i].se.se == -1) inside = -inside;
+		else if(inside == 0) inside = (inter[i].se.fi+inter[i].se.se) * pre;
+		else {
+			pre = (inter[i].se.fi + inter[i].se.se) * inside;
+			inside = 0;
+		}
+		// do operations here, inside == 0 means parallel to segment
+		//~ if(inside == -1) {}
+		// Uncomment this to stop at b;
+		// if(inter[i].fi == b) return {(inter[i].fi - inter[furthest].fi).dist2(), b};
+		if(inside == -1) furthest = i + 1;
+	}
+	return {0, b};
 }
