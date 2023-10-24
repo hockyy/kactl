@@ -13,6 +13,7 @@ template<class T> inline bool eq(T x, T y) { return fabs(x-y) < eps; }
 template<class T> inline bool le(T x, T y) { return x < y + eps; }
 template<class T> inline bool lt(T x, T y) { return x + eps < y; }
 template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
+// Ax + By + C = 0 (A = p.y-q.y; B = q.x-p.x; C = -A*P.x-B*P.y)
 template<class T>
 struct Point {
 	typedef Point P;
