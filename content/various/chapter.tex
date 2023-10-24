@@ -10,12 +10,12 @@
 	% \kactlimport{LIS.h}
 	% \kactlimport{FastKnapsack.h}
 
-\section{Dynamic programming}
-	\kactlimport{Alien.h}
-	\kactlimport{SlopeTrick.h}
+% \section{Dynamic programming}
+	% \kactlimport{Alien.h}
+	% \kactlimport{SlopeTrick.h}
 	% \kactlimport{SosDP.h}
-	\kactlimport{KnuthDP.h}
-	\kactlimport{DivideAndConquerDP.h}
+	% \kactlimport{KnuthDP.h}
+	% \kactlimport{DivideAndConquerDP.h}
 
 % \section{Debugging tricks}
 % 	\begin{itemize}
@@ -29,7 +29,7 @@
 	\verb@__builtin_ia32_ldmxcsr(40896);@ disables denormals (which make floats 20x slower near their minimum value).
 	\subsection{Bit hacks}
 		\begin{itemize}
-			\item \verb@31-__builtin_clz(n);@ to get log2(n), dont call n = 0.
+			\item \verb@31-__builtin_clz(n);@ to get $\log_{2}(n)$, dont call n = 0.
 			\item \verb@x & -x@ is the least bit in \texttt{x}.
 			\item \verb@for (int x = m; x; ) { --x &= m; ... }@ loops over all subset masks of \texttt{m} (except \texttt{m} itself).
 			\item \verb@c = x&-x, r = x+c; (((r^x) >> 2)/c) | r@ is the next number after \texttt{x} with the same number of bits set.
@@ -123,7 +123,7 @@
 % Now we compute the polylines in the order $dp[0], dp[1], . . . , dp[N]$. We should keep two sets (or priority
 % queues) representing ${l0,...,li}$ and ${r0,...,ri}$ meanwhile, and the solution works in $N \log N$. 
 
-\kactlimport{NarrowRectangle.h}
+% \kactlimport{NarrowRectangle.h}
 
 % \kactlimport{TortoiseHare.h}
 
