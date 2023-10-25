@@ -10,6 +10,7 @@
  */
 #pragma once
 
+typedef double LD;
 template<class T> struct Point3D {
   typedef Point3D P;
   typedef const P& R;
@@ -36,7 +37,7 @@ template<class T> struct Point3D {
   // determine the 2d orientation of p.ccw(q, r). normal got by cross
   T orientByNormal(R p, R q, R r) {return (q - p) * (r - p) | (*this);}
   T dist2() const { return x * x + y * y + z * z; }
-  double dist() const { return sqrt((double)dist2()); }
+  T dist() const { return sqrtl((LD)dist2()); }
   //Azimuthal angle (longitude) to x-axis in interval [-pi, pi]
   double phi() const { return atan2(y, x); }
   //Zenith angle (latitude) to the z-axis in interval [0, pi]
@@ -50,35 +51,42 @@ template<class T> struct Point3D {
     return u * dot(u) * (1 - c) + (*this) * c - cross(u) * s;
   }
   double angle(const P &other) const {
-    return acos(min(fabs((*this) | other) / dist() / other.dist(), 1.0));
+    return acos(min(fabs((double)((*this) | other)) / dist() / other.dist(), 1.0));
+  }
+  friend ostream& operator<<(ostream& os, P p) {
+    return os << "(" << p.x << "," << p.y << "," << p.z << ")";
   }
 };
 
 
-typedef double T;
+typedef LL T;
 typedef Point3D<T> p3;
 
-
-template <class T> int sgn(T x) { return (x > 0) - (x < 0); }
+const LD eps = 1e-8;
+template<class T> inline bool eq(T x, T y) { return fabs(x - y) < eps; }
+template<class T> inline bool le(T x, T y) { return x < y + eps; }
+template<class T> inline bool lt(T x, T y) { return x + eps < y; }
+template <class T> int sgn(T x) { return lt((LD)0.0, x) - lt(x, (LD)0.0); }
 struct Plane {
   // normal vector is better if its a unit vector.
   p3 n; T d;
   // From normal n and offset d
   Plane(p3 _n, T _d) : n(_n.unit()), d(_d) {}
   // From normal n and point P
-  Plane(p3 _n, p3 p) : n(_n.unit()), d(_n | p) {}
+  Plane(p3 _n, p3 p) : n(_n.unit()), d(n | p) {}
   // From three non-collinear points P,Q,R
   Plane(p3 p, p3 q, p3 r) : Plane((q - p) * (r - p), p) {}
   // weighted distance of point p, if n is unit vector, its signed distance
   T side(p3 p) {return (n | p) - d;}
-  double dist(p3 p) {return fabs(side(p));}
+  LD dist(p3 p) {return fabs(side(p));}
   // translate a plane by vector t
   Plane translate(p3 t) {return {n, d + (n | t)};}
-  Plane shiftUp(double shift) {return {n, d + shift};}
+  Plane shiftUp(T shift) {return {n, d + shift};}
   p3 proj(p3 p) {return p - n * side(p);}
   p3 refl(p3 p) {return p - n * 2 * side(p);}
   double angle(const Plane &p2) const { return n.angle(p2.n); }
 };
+
 
 struct Line3d {
   // d is a unit shift vector
@@ -91,21 +99,23 @@ struct Line3d {
     o = (p2.n * p1.d - p1.n * p2.d) * d;
   }
   double dist2(p3 p) const {return (d * (p - o)).dist2();}
-  double dist(p3 p) const {return sqrt(dist2(p));}
+  LD dist(p3 p) const {return sqrt(dist2(p));}
   bool cmpProj(p3 p, p3 q) {return (d | p) < (d | q);}
   p3 proj(p3 p) {return o + d * (d | (p - o));}
   p3 refl(p3 p) {return proj(p) * 2 - p;}
   // when d dot p.n is 0, line is parallel with plane
   p3 inter(Plane p) {return o - d * p.side(o) / (d | p.n);}
-  double dist(const Line3d &other) const {
+  LD dist(const Line3d &other) const {
     p3 n = d * other.d;
     if (n == p3(0, 0)) // parallel
       return dist(other.o);
     return fabs((other.o - o) | n);
   }
-  p3 closestFromLine(const Line3d &other) const {
+  // Use with care
+  pair<bool, p3> closestFromLine(const Line3d &other) const {
     p3 n2 = other.d * (d * other.d);
-    return o + d * ((other.o - o) | n2) / (d | n2);
+    if (eq((double)(d | n2), 0.0)) return {0, o};
+    return {1, o + d * ((other.o - o) | n2) / (d | n2)};
   }
   double angle(const Line3d &other) {
     return d.angle(other.d);
