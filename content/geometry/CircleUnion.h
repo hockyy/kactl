@@ -1,6 +1,6 @@
 /**
  * Author: Neroysq
- * Date: 2012-05-15 
+ * Date: 2012-05-15
  * License: CC0
  * Source: https://github.com/Neroysq/Neroysq-SPOJ/commits/master/Codes/CIRUT.cpp
  * Description: Given N circles, for each K, find the area of Kth-region
@@ -18,6 +18,11 @@ const int LIM = 1000;
 Circle isi[LIM + 18];
 int n, p[LIM * 4 + 18], q[LIM * 4 + 18], qt, ttmp;
 db ans[LIM + 18], alp[LIM * 4 + 18];
+void reset(int _n) {
+  n = _n; qt = ttmp = 0;
+  rep(i, 0, (n + 1) * 4 + 2) p[i] = q[i] = alp[i] = 0;
+  rep(i, 0, n + 1) ans[i] = 0;
+}
 
 int eps(db x) {
   return x < -1e-8 ? -1 : x > 1e-8;
