@@ -27,3 +27,9 @@ vi conv(vi a, vi b) {
 	rep(i,0,sz(a)) a[i] *= b[i];
 	FST(a, 1); return a;
 }
+void sos(vi &a){
+  // use OR to get submask, use AND to get supermask
+  vi tmp(sz(a));
+  rep(i,0,LIM) tmp[inv(i)] = a[i];
+  a = move(tmp); FST(a, 0);
+}
