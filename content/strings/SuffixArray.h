@@ -15,11 +15,13 @@
  * Time: O(n \log n)
  * Status: stress-tested
  */
+
 struct SuffixArray {
-  vi sa, lcp, rev;
+  vi sa, lcp, rank;
   SuffixArray(string &s, int lim = 256) {
     int n = sz(s) + 1, k = 0, a, b;
-    vi x(all(s) + 1), y(n), ws(max(n, lim)), rank(n);
+    vi x(all(s) + 1), y(n), ws(max(n, lim));
+    rank.resize(n);
     sa = lcp = y, iota(all(sa), 0);
     for (int j = 0, p = 0; p < n; j = max(1, j * 2), lim = p) {
       p = j;
@@ -38,11 +40,12 @@ struct SuffixArray {
       for (k && k--, j = sa[rank[i] - 1];
            s[i + k] == s[j + k]; k++);
     }
-    rev = rank; rmq = RMQ(lcp);
+  rmq = RMQ(lcp);
   }
   RMQ<int> rmq;
   int getLCP(int i, int j) {
-    j = min(j, sz(lcp) - 1); i = rev[i]; j = rev[j];
+    if(i == j) return sz(rank) - i - 1;
+    j = min(j, sz(lcp) - 1); i = rank[i]; j = rank[j];
     if (i > j) swap(i, j);
     return rmq.query(i + 1, j + 1);
   }

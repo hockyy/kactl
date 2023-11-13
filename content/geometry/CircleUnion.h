@@ -21,7 +21,7 @@ db ans[LIM + 18], alp[LIM * 4 + 18];
 void reset(int _n) {
   n = _n; qt = ttmp = 0;
   rep(i, 0, (n + 1) * 4 + 2) p[i] = q[i] = alp[i] = 0;
-  rep(i, 0, n + 1) ans[i] = 0;
+  rep(i, 0, n + 1) ans[i] = 0, isi[i] = Circle();
 }
 
 int eps(db x) {
