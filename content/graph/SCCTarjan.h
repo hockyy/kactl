@@ -16,17 +16,18 @@
 #pragma once
 
 void tarjan(LL pos) {
-  path.pb(pos); vis[pos] = 1; low[pos] = num[pos] = ++curtime;
-  for (int i = 0; i < edge[pos].size(); i++) {
-    LL nx = edge[pos][i];
+  path.pb(pos); inPath[pos] = 1; low[pos] = num[pos] = ++curtime;
+  trav(nx, edge[pos]) {
     if (!num[nx]) tarjan(nx);
-    if (vis[nx]) low[pos] = min(low[pos], low[nx]);
+    if (inPath[nx]) low[pos] = min(low[pos], low[nx]);
   }
-  if (low[pos] == num[pos]) { // Push path.back() until equal pos }
+  if (low[pos] == num[pos]) {
+    for(LL cur = path.back();;cur = path.back()){
+      path.pop_back(); inPath[cur] = 0;
+      solver->join(pos, cur);
+      if(cur == pos) break;
+    }
+  }
 }
 
-int main() {
-  for (int i = 1; i <= n; i++) {
-    if (num[i] == 0) tarjan(i);
-  }
-}
+rep(i,0,n) if(!num[i]) tarjan(i);
