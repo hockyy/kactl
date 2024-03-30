@@ -15,46 +15,40 @@
  */
 #pragma once
 
-LL goodPrimes[] = {196613, 393241, 786433, 1572869, 3145739, 6291469, 12582917, 25165843, 50331653, 100663319, 201326611, 402653189, 805306457, 1610612741};
-struct rollingHash {
-  LL base, N;
+ 
+const int HASH = 3;
+vector <vector<LL>> base;
+const int LIM = 2e6 + 5;
+struct RollingHash {
+  LL baseIdx, N;
   vi *arr;
-  vector<LL> precBase, hash;
-  rollingHash() {}
-  rollingHash(vi *x, int curBase = 53) {
-    arr = x; N = arr->size(); base = curBase;
-    hash.resize(N); precBase.resize(N);
+  vector<LL> hash;
+  RollingHash() {}
+  RollingHash(vi *x, LL bs) {
+    baseIdx = bs;
+    arr = x;
+    N = arr->size();
+    hash.resize(N);
     makeHash();
   }
   void makeHash() {
     if (N == 0) return;
-    precBase[0] = 1;
-    for (int i = 1; i < N; i++) precBase[i] = (precBase[i - 1] * base) % MOD;
+    assert(sz(base[baseIdx]) >= N);
     for (int i = 0; i < N; i++) {
       int curlet = (*arr)[i];
-      hash[i] = (curlet * precBase[N - i - 1]) % MOD;
+      hash[i] = (curlet * base[baseIdx][i]) % MOD;
       if (i) hash[i] = (hash[i] + hash[i - 1]) % MOD;
     }
   }
-  inline LL getHash(PII a) { return (hash[a.se] - (a.fi > 0 ? hash[a.fi - 1] : 0) + MOD) % MOD; }
-  bool isSame(PII a, PII b) {
-    if (a.se - a.fi != b.se - b.fi) return 0;
-    LL valA = getHash(a), valB = getHash(b);
-    if (a.fi < b.fi) swap(a, b), swap(valA, valB);
-    valA = (valA * precBase[a.fi - b.fi]) % MOD;
-    return valA == valB;
-  }
-  bool isHash(PII a, LL sHash) {
-    sHash = (sHash * precBase[N - a.se - 1]) % MOD;
-    return getHash(a) == sHash;
-  }
+  inline LL getHash(PII a) { return (hash[a.se] - (a.fi > 0 ? hash[a.fi - 1] : 0) + MOD) % MOD * base[baseIdx][(LIM - a.fi - 1)] % MOD; }
 };
-
-const int HASH = 2;
-
-bool isSame(pii a, pii b, vector <rollingHash> &solver) {
-  if (max(a.fi, a.se) >= solver[0].N || max(b.fi, b.se) >= solver[0].N) return 0;
-  if (min(a.fi, a.se) < 0 || min(b.fi, b.se) < 0) return 0;
-  for (int i = 0; i < HASH; i++) if (!solver[i].isSame(a, b)) return 0;
-  return 1;
+ 
+void initBase() {
+  base.resize(HASH, vector<LL>(LIM + 5));
+  rep(i, 0, HASH) {
+    base[i][0] = 1;
+    rep(j, 1, LIM + 5) {
+      base[i][j] = base[i][j - 1] * goodPrimes[i] % MOD;
+    }
+  }
 }
